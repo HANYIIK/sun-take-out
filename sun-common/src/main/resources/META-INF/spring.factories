@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.otsira.config.WebMvcConfiguration,\
+com.otsira.config.DefaultFeignConfiguration

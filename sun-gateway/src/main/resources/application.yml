@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: sun-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: sun-admin
+          uri: lb://sun-admin
+          predicates:
+            - Path=/admin/**
+        - id: sun-user
+          uri: lb://sun-user
+          predicates:
+            - Path=/user/**
+server:
+  port: 8080
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10086/eureka
+
+logging:
+  level:
+    org:
+      springframework: debug
+
+auth:
+  sun:
+    jwt:
+      admin-secret-key: yiixhanyiik@gmail.com
+      admin-ttl: 7200000
+      admin-token-name: token_admin
+      user-secret-key: yiixhanyiik@163.com
+      user-ttl: 7200000
+      user-token-name: token_user
+    path:
+      exclude-paths:
+        - /admin/employee/login
+        - /user/login

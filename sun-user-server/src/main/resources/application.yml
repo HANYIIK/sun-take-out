@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: sun-user
+  datasource:
+    url: jdbc:mysql://localhost:3306/sky_take_out
+    username: root
+    password: root
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=600s
+
+server:
+  port: 8082
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10086/eureka
+
+mybatis:
+  type-aliases-package: com.otsira.entity
+
+logging:
+  level:
+    com:
+      otsira:
+        mapper: debug
+        service: info
+        controller: info
+
+auth:
+  sun:
+    jwt:
+      admin-secret-key: yiixhanyiik@gmail.com
+      admin-ttl: 7200000
+      admin-token-name: token_admin
+      user-secret-key: yiixhanyiik@163.com
+      user-ttl: 7200000
+      user-token-name: token_user
+    path:
+      exclude-paths:
+        - /admin/employee/login
+        - /user/login
