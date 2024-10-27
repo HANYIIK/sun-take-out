@@ -1,7 +1,6 @@
 package com.otsira.client;
 
 import com.otsira.entity.User;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,8 +9,8 @@ import java.util.List;
 /**
  * @program: sun-take-out
  * @author: HANYIIK
- * @description: 调用用户端微服务的熔断方法
- * @create: 2024/10/26 17:18
+ * @description: 熔断方法
+ * @create: 2024/10/27 14:30
  */
 @Component
 public class UserClientFallback implements UserClient {

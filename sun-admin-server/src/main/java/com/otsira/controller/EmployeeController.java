@@ -15,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -28,17 +29,12 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/admin/employee")
-@Slf4j
 @Api(tags = "员工管理相关接口")
+@Slf4j
 public class EmployeeController {
     private EmployeeService employeeService;
     private JwtProperties jwtProperties;
     private UserClient userClient;
-
-    @Autowired
-    public void setUserClient(UserClient userClient) {
-        this.userClient = userClient;
-    }
 
     @Autowired
     public void setEmployeeService(EmployeeService employeeService) {
@@ -48,6 +44,11 @@ public class EmployeeController {
     @Autowired
     public void setJwtProperties(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
+    }
+
+    @Autowired
+    public void setUserClient(@Qualifier("userClient") UserClient userClient) {
+        this.userClient = userClient;
     }
 
     /**

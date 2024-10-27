@@ -20,7 +20,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @EnableTransactionManagement
 @MapperScan("com.otsira.mapper")
 @Slf4j
-@EnableFeignClients(basePackages = "com.otsira.client", defaultConfiguration = DefaultFeignConfiguration.class) // 打开 openFeign 支持
+@EnableFeignClients(defaultConfiguration = DefaultFeignConfiguration.class) // 打开 openFeign 支持
 public class SunAdminServerApplication {
     public static void main(String[] args) {
         log.info("admin server starting...");

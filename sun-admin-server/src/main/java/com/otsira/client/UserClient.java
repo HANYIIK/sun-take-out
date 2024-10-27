@@ -13,7 +13,7 @@ import java.util.List;
  * @description: 用于调用用户端微服务的 openFeign 接口
  * @create: 2024/10/26 17:17
  */
-@FeignClient(value = "sun-user", fallback = UserClientFallback.class)
+@FeignClient(value = "sun-user", fallback = UserClientFallback.class, qualifiers = "userClient")
 public interface UserClient {
     @GetMapping("user/findAllUsers")
     @ResponseBody
