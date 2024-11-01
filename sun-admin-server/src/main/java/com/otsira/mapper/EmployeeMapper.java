@@ -4,6 +4,8 @@ import com.otsira.entity.Employee;
 import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.List;
+
 /**
  * @program: sun-take-out
  * @author: HANYIIK
@@ -19,4 +21,10 @@ public interface EmployeeMapper extends Mapper<Employee> {
      */
     @Select("select * from employee where username = #{username}")
     Employee selectByUsername(String username);
+
+    @Select("select * from employee where name like concat('%',#{name},'%') LIMIT #{start},#{pageSize}")
+    List<Employee> queryPage(Integer start, Integer pageSize, String name);
+
+    @Select("select count(*) from employee where name like concat('%',#{name},'%')")
+    Integer queryPageCount(String name);
 }

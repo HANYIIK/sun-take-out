@@ -1,6 +1,5 @@
-package com.otsira.entity;
+package com.otsira.dto;
 
-// import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,39 +7,32 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * @program: sun-take-out
  * @author: HANYIIK
- * @description: 管理员类
- * @create: 2024/10/19 21:54
+ * @description: 用于封装前端发过来的新增员工表单的 DTO
+ * @create: 2024/10/27 18:51
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "employee")
-@ApiModel(description = "用于封装数据库中员工全部信息的实体类")
-public class Employee implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@ApiModel(description = "用于封装前端发过来的新增/修改员工表单的 DTO")
+public class EmployeeInfoDTO implements Serializable {
     @ApiModelProperty("主键值")
     private Long id;
+
+    @ApiModelProperty("状态: 0-禁用, 1-启用")
+    private Integer status;
 
     @ApiModelProperty("用户名")
     private String username;
 
     @ApiModelProperty("姓名")
     private String name;
-
-    @ApiModelProperty("密码")
-    private String password;
 
     @ApiModelProperty("电话")
     private String phone;
@@ -51,20 +43,15 @@ public class Employee implements Serializable {
     @ApiModelProperty("身份证号")
     private String idNumber;
 
-    @ApiModelProperty("状态")
-    private Integer status;
-
     @ApiModelProperty("创建时间")
-    // @JsonFormat(timezone = "GMT+8", pattern="yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime createTime;
 
     @ApiModelProperty("更新时间")
-    // @JsonFormat(timezone = "GMT+8", pattern="yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime updateTime;
 
-    @ApiModelProperty("创建用户的个数")
+    @ApiModelProperty("创建该员工信息的员工id")
     private Long createUser;
 
-    @ApiModelProperty("更新用户的个数")
+    @ApiModelProperty("修改该员工信息的员工id")
     private Long updateUser;
 }

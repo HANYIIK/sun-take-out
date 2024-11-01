@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Slf4j
 @Configuration
-public class DefaultFeignConfiguration {
+public class FeignConfiguration {
+
     @Bean
     public RequestInterceptor requestInterceptor() {
         log.info("openFeign 请求拦截器启动...");

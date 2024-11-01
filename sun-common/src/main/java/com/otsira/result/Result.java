@@ -1,5 +1,6 @@
 package com.otsira.result;
 
+import com.otsira.constant.ResultCodeConstant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 @Data
 @ApiModel(description = "后端响应给前端的统一结果类")
 public class Result<T> implements Serializable {
-    @ApiModelProperty("响应结果")
+    @ApiModelProperty("响应结果: 1-成功, 0-失败")
     private Integer code;
 
     @ApiModelProperty("响应消息")
@@ -26,20 +27,20 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> success() {
         Result<T> result = new Result<>();
-        result.setCode(1);
+        result.setCode(ResultCodeConstant.SUCCESS);
         return result;
     }
 
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
-        result.setCode(1);
+        result.setCode(ResultCodeConstant.SUCCESS);
         result.setData(data);
         return result;
     }
 
     public static <T> Result<T> error(String msg) {
         Result<T> result = new Result<>();
-        result.setCode(0);
+        result.setCode(ResultCodeConstant.FAIL);
         result.setMsg(msg);
         return result;
     }

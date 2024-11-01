@@ -1,9 +1,12 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="CommentedOutCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="minLines" value="10" />
+    </inspection_tool>
     <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <Languages>
-        <language minSize="47" name="Java" />
+        <language minSize="258" name="Java" />
       </Languages>
     </inspection_tool>
     <inspection_tool class="IncorrectHttpHeaderInspection" enabled="true" level="WARNING" enabled_by_default="true">
@@ -126,6 +129,12 @@
           <option value="sun-user-server" />
           <option value="sun-user-server" />
           <option value="sun-user-server" />
+          <option value="sun-common" />
+          <option value="sun-common" />
+          <option value="sun-common" />
+          <option value="sun-common" />
+          <option value="sun-common" />
+          <option value="sun-common" />
         </list>
       </option>
       <option name="ignoredPackages">
@@ -236,10 +245,22 @@
           <option value="com.alibaba:fastjson:1.2.76" />
           <option value="io.netty:netty-codec:4.1.79.Final" />
           <option value="io.netty:netty-handler:4.1.79.Final" />
+          <option value="org.mybatis:mybatis:3.4.6" />
+          <option value="io.github.classgraph:classgraph:4.8.83" />
+          <option value="commons-io:commons-io:2.11.0" />
+          <option value="org.apache.poi:poi:3.16" />
+          <option value="org.apache.xmlbeans:xmlbeans:2.6.0" />
+          <option value="org.springframework:spring-context:5.3.22" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="不可利用" />
+          <option value="不可利用" />
+          <option value="不可利用" />
+          <option value="不可利用" />
+          <option value="不可利用" />
+          <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />

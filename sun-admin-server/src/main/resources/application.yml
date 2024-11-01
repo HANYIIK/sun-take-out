@@ -2,7 +2,7 @@ spring:
   application:
     name: sun-admin
   datasource:
-    url: jdbc:mysql://localhost:3306/sky_take_out
+    url: jdbc:mysql:///sky_take_out
     username: root
     password: root
   mvc:
@@ -22,6 +22,9 @@ eureka:
 
 mybatis:
   type-aliases-package: com.otsira.entity
+  configuration:
+    # 开启驼峰命名
+    map-underscore-to-camel-case: true
 
 logging:
   level:
@@ -44,3 +47,13 @@ auth:
       exclude-paths:
         - /admin/employee/login
         - /user/login
+
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    access-key-id: CLASS_PATH
+    access-key-secret: CLASS_PATH
+    bucket-name: ostsiraoss
+    region: cn-beijing
+    file-dir: dishImages/
+    url-prefix: https://ostsiraoss.oss-cn-beijing.aliyuncs.com/

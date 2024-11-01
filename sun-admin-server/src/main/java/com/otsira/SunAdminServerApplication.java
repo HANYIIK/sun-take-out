@@ -1,6 +1,6 @@
 package com.otsira;
 
-import com.otsira.config.DefaultFeignConfiguration;
+import com.otsira.config.FeignConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,7 +20,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @EnableTransactionManagement
 @MapperScan("com.otsira.mapper")
 @Slf4j
-@EnableFeignClients(defaultConfiguration = DefaultFeignConfiguration.class) // 打开 openFeign 支持
+@EnableFeignClients(defaultConfiguration = FeignConfiguration.class) // 打开 openFeign 支持
 public class SunAdminServerApplication {
     public static void main(String[] args) {
         log.info("admin server starting...");

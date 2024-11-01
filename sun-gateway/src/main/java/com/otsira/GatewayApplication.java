@@ -2,6 +2,7 @@ package com.otsira;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @description: 微服务的网关
  * @create: 2024/10/19 15:55
  */
-@SpringBootApplication
+@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
 @EnableDiscoveryClient
 public class GatewayApplication {
 
