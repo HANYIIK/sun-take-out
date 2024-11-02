@@ -25,14 +25,14 @@ public class EmployeeInfoDTO implements Serializable {
     @ApiModelProperty("主键值")
     private Long id;
 
-    @ApiModelProperty("状态: 0-禁用, 1-启用")
-    private Integer status;
-
     @ApiModelProperty("用户名")
     private String username;
 
     @ApiModelProperty("姓名")
     private String name;
+
+    @ApiModelProperty("密码")
+    private String password;
 
     @ApiModelProperty("电话")
     private String phone;
@@ -42,6 +42,9 @@ public class EmployeeInfoDTO implements Serializable {
 
     @ApiModelProperty("身份证号")
     private String idNumber;
+
+    @ApiModelProperty("状态: 0-禁用, 1-启用")
+    private Integer status;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createTime;

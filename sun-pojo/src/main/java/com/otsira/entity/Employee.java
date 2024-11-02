@@ -1,6 +1,5 @@
 package com.otsira.entity;
 
-// import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -55,11 +54,9 @@ public class Employee implements Serializable {
     private Integer status;
 
     @ApiModelProperty("创建时间")
-    // @JsonFormat(timezone = "GMT+8", pattern="yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime createTime;
 
     @ApiModelProperty("更新时间")
-    // @JsonFormat(timezone = "GMT+8", pattern="yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime updateTime;
 
     @ApiModelProperty("创建用户的个数")

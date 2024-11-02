@@ -25,6 +25,9 @@ public class CategoryInfoDTO implements Serializable {
     @ApiModelProperty("主键值")
     private Long id;
 
+    @ApiModelProperty("分类类型: 1-菜品分类, 2-套餐分类")
+    private Integer type;
+
     @ApiModelProperty("菜品分类名")
     private String name;
 
@@ -33,9 +36,6 @@ public class CategoryInfoDTO implements Serializable {
 
     @ApiModelProperty("状态: 0-禁用, 1-启用")
     private Integer status;
-
-    @ApiModelProperty("分类类型: 1-菜品分类, 2-套餐分类")
-    private Integer type;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createTime;

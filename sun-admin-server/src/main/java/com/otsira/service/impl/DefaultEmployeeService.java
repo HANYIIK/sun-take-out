@@ -112,6 +112,8 @@ public class DefaultEmployeeService implements EmployeeService {
             }
         }
         // 没有重复或用户名没有被更改，继续修改
+        // 之前密码被改成"******", 需要将其置空，避免数据库中的密码被修改成"******"
+        employeeInfoDTO.setPassword(null);
         Employee employee = objectMapper.convertValue(employeeInfoDTO, Employee.class);
         return employeeMapper.updateByPrimaryKeySelective(employee);
     }
@@ -161,7 +163,8 @@ public class DefaultEmployeeService implements EmployeeService {
         if (employee == null) {
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
-        employee.setPassword("**********");
+        // 隐藏密码, 防止前台通过浏览器控制台看到密码
+        employee.setPassword("******");
         return employee;
     }
 }

@@ -174,7 +174,7 @@ public class EmployeeController {
     @PutMapping
     @ApiOperation("提交编辑后的员工信息")
     public Result<Object> update(@RequestBody EmployeeInfoDTO employeeInfoDTO) {
-        log.info("管理员 id-{} 正在请求提交编辑后的员工 id-{} 的信息", EmployeeContext.getEmpId(), employeeInfoDTO.getId());
+        log.info("管理员 id-{} 正在请求提交编辑后的员工信息: {}", EmployeeContext.getEmpId(), employeeInfoDTO);
         if (employeeService.update(employeeInfoDTO) > 0) {
             return Result.success();
         }
