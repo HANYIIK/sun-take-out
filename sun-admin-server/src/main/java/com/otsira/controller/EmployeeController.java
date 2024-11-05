@@ -160,10 +160,7 @@ public class EmployeeController {
     public Result<Employee> edit(@PathVariable Long id) {
         log.info("管理员 id-{} 请求编辑员工 id-{}", EmployeeContext.getEmpId(), id);
         Employee employee = employeeService.queryById(id);
-        if (employee != null) {
-            return Result.success(employee);
-        }
-        return Result.error(MessageConstant.ACCOUNT_NOT_FOUND);
+        return Result.success(employee);
     }
 
     /**

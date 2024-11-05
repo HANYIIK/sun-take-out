@@ -1,4 +1,4 @@
-package com.otsira.dto;
+package com.otsira.vo;
 
 import com.otsira.entity.DishFlavor;
 import io.swagger.annotations.ApiModel;
@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,15 +15,15 @@ import java.util.List;
 /**
  * @program: sun-take-out
  * @author: HANYIIK
- * @description: 前端返回过来的新增/修改菜品信息的 DTO(包含口味 dishFlavors)
- * @create: 2024/10/31 18:56
+ * @description: 后端返回给前端的 Dish 数据(需要categoryName属性)
+ * @create: 2024/11/03 19:57
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@ApiModel(description = "用于封装前端发过来的修改菜品表单的 DTO(包含口味 dishFlavors)")
-public class DishInfoDTO implements Serializable {
+@ApiModel(description = "后端返回给前端的 Dish 数据(需要categoryName属性)")
+public class DishInfoVO {
     @ApiModelProperty("主键值")
     private Long id;
 
@@ -33,6 +32,9 @@ public class DishInfoDTO implements Serializable {
 
     @ApiModelProperty("菜品分类id")
     private Long categoryId;
+
+    @ApiModelProperty(value = "菜品分类名称")
+    private String categoryName;
 
     @ApiModelProperty("菜品价格")
     private BigDecimal price;

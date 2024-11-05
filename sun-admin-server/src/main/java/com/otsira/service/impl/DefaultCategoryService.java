@@ -95,6 +95,7 @@ public class DefaultCategoryService implements CategoryService {
         Category category = objectMapper.convertValue(categoryInfoDTO, Category.class);
 
         // 更新数据库
+        // TODO: 连带着把该分类下的菜品或套餐的状态也更新
         return categoryMapper.updateByPrimaryKeySelective(category);
     }
 

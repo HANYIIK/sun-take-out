@@ -22,6 +22,6 @@ public interface CategoryMapper extends Mapper<Category> {
     @Select("select * from category where name = #{name}")
     Category selectByName(String name);
 
-    @Select("select * from category where type = #{type}")
+    @Select("select * from category where type = #{type} order by sort")
     List<Category> queryByType(Integer type);
 }

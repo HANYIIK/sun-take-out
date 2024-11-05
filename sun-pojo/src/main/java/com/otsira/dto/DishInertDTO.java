@@ -8,25 +8,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @program: sun-take-out
- * @author: HANYIIK
- * @description: 前端返回过来的新增/修改菜品信息的 DTO(包含口味 dishFlavors)
- * @create: 2024/10/31 18:56
- */
+* @program: sun-take-out
+* @author: HANYIIK
+* @description: 用于封装前端发过来的新增菜品表单的 DTO(包含口味 dishFlavors)
+* @create: 2024/11/03 18:56
+*/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ApiModel(description = "用于封装前端发过来的修改菜品表单的 DTO(包含口味 dishFlavors)")
-public class DishInfoDTO implements Serializable {
+@ApiModel(description = "用于封装前端发过来的新增菜品表单的 DTO(包含口味 dishFlavors)")
+public class DishInertDTO {
     @ApiModelProperty("主键值")
     private Long id;
+
+    @ApiModelProperty("状态码")
+    private String code;
 
     @ApiModelProperty("菜品名称")
     private String name;
