@@ -1,6 +1,8 @@
 package com.otsira.service;
 
 import com.otsira.dto.SetmealInfoDTO;
+import com.otsira.entity.Setmeal;
+import com.otsira.entity.SetmealDish;
 import com.otsira.result.Page;
 
 import java.util.List;
@@ -50,4 +52,18 @@ public interface SetmealService {
      * @return int 影响行数
      */
     int deleteBatch(List<Long> ids);
+
+    /**
+     * 根据菜品id查询套餐菜品关系
+     * @param id 菜品id
+     * @return List<SetmealDish> 套餐菜品关系列表
+     */
+    List<SetmealDish> querySetmealDishByDishId(Long id);
+
+    /**
+     * 根据分类id查询套餐
+     * @param id 分类id
+     * @return List<Setmeal> 套餐列表
+     */
+    List<Setmeal> querySetmealByCategoryId(Long id);
 }

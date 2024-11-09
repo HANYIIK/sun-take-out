@@ -31,4 +31,10 @@ public interface SetmealMapper extends Mapper<Setmeal> {
 
     @Delete("delete from setmeal_dish where setmeal_id = #{id}")
     void deleteSetmealDishesBySetmealId(Long id);
+
+    @Select("select * from setmeal_dish where dish_id = #{id}")
+    List<SetmealDish> querySetmealDishesByDishId(Long id);
+
+    @Select("select * from setmeal where category_id = #{id}")
+    List<Setmeal> querySetmealByCategoryId(Long id);
 }

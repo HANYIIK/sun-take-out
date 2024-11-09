@@ -2,16 +2,24 @@ package com.otsira.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.otsira.annotation.AutoFill;
+import com.otsira.constant.CategoryTypeConstant;
 import com.otsira.constant.MessageConstant;
 import com.otsira.constant.StatusConstant;
 import com.otsira.dto.CategoryInfoDTO;
+import com.otsira.dto.DishInfoDTO;
+import com.otsira.dto.SetmealInfoDTO;
 import com.otsira.entity.Category;
+import com.otsira.entity.Dish;
+import com.otsira.entity.Setmeal;
 import com.otsira.enumeration.OperationType;
 import com.otsira.exception.CategoryNameConflictException;
 import com.otsira.exception.CategoryNotFoundException;
+import com.otsira.exception.DeletionNotAllowedException;
 import com.otsira.mapper.CategoryMapper;
 import com.otsira.result.Page;
 import com.otsira.service.CategoryService;
+import com.otsira.service.DishService;
+import com.otsira.service.SetmealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +35,23 @@ import java.util.List;
 @Service
 public class DefaultCategoryService implements CategoryService {
     private CategoryMapper categoryMapper;
+    private DishService dishService;
+    private SetmealService setmealService;
     private ObjectMapper objectMapper;
 
     @Autowired
     public void setCategoryMapper(CategoryMapper categoryMapper) {
         this.categoryMapper = categoryMapper;
+    }
+
+    @Autowired
+    public void setDishService(DishService dishService) {
+        this.dishService = dishService;
+    }
+
+    @Autowired
+    public void setSetmealService(SetmealService setmealService) {
+        this.setmealService = setmealService;
     }
 
     @Autowired
@@ -56,8 +76,21 @@ public class DefaultCategoryService implements CategoryService {
 
     @Override
     public int delete(Long id) {
-        // TODO: 删除菜品分类前，需要判断该分类下是否有菜品或套餐
-        // TODO: 新增 DELETION_NOT_ALLOWED_EXCEPTION
+        // 1.删除菜品分类前，需要判断该分类下是否有菜品
+        List<Dish> dishes = dishService.queryByCategoryId(id);
+        if (dishes != null && !dishes.isEmpty()) {
+            // 该分类下有菜品，不允许删除
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
+        }
+
+        // 2.删除菜品分类前，需要判断该分类下是否有套餐
+        List<Setmeal> setmeals = setmealService.querySetmealByCategoryId(id);
+        if (setmeals != null && !setmeals.isEmpty()) {
+            // 该分类下有套餐，不允许删除
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);
+        }
+
+        // 3.该菜品分类下没有菜品或套餐，可以删除
         return categoryMapper.deleteByPrimaryKey(id);
     }
 
@@ -95,8 +128,33 @@ public class DefaultCategoryService implements CategoryService {
         Category category = objectMapper.convertValue(categoryInfoDTO, Category.class);
 
         // 更新数据库
-        // TODO: 连带着把该分类下的菜品或套餐的状态也更新
-        return categoryMapper.updateByPrimaryKeySelective(category);
+        int updateDishStatus = 0;
+        // 连带着把该分类下的子菜品或子套餐的状态也更新
+        Integer type = categoryMapper.selectByPrimaryKey(categoryInfoDTO.getId()).getType();
+        // 该分类是个菜品分类
+        if (CategoryTypeConstant.DISH.equals(type)) {
+            List<Dish> dishes = dishService.queryByCategoryId(categoryInfoDTO.getId());
+            if (dishes != null && !dishes.isEmpty()) {
+                for (Dish dish : dishes) {
+                    DishInfoDTO dishInfoDTO = dishService.queryDishInfoDtoById(dish.getId());
+                    dishInfoDTO.setStatus(categoryInfoDTO.getStatus());
+                    updateDishStatus += dishService.update(dishInfoDTO);
+                }
+            }
+        // 该分类是个套餐分类
+        } else if (CategoryTypeConstant.SETMEAL.equals(type)) {
+            List<Setmeal> setmeals = setmealService.querySetmealByCategoryId(categoryInfoDTO.getId());
+            if (setmeals != null && !setmeals.isEmpty()) {
+                for (Setmeal setmeal : setmeals) {
+                    SetmealInfoDTO setmealInfoDTO = setmealService.querySetmealInfoDtoById(setmeal.getId());
+                    setmealInfoDTO.setStatus(categoryInfoDTO.getStatus());
+                    updateDishStatus += setmealService.update(setmealInfoDTO);
+                }
+            }
+        }
+
+        // 更新菜品分类状态
+        return categoryMapper.updateByPrimaryKeySelective(category) + updateDishStatus;
     }
 
     @Override

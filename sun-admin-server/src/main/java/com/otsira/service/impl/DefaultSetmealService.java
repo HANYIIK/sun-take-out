@@ -2,10 +2,15 @@ package com.otsira.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.otsira.annotation.AutoFill;
+import com.otsira.constant.MessageConstant;
+import com.otsira.constant.StatusConstant;
 import com.otsira.dto.SetmealInfoDTO;
 import com.otsira.entity.Setmeal;
 import com.otsira.entity.SetmealDish;
 import com.otsira.enumeration.OperationType;
+import com.otsira.exception.DeletionNotAllowedException;
+import com.otsira.exception.EnableStatusNotAllowedException;
+import com.otsira.mapper.DishMapper;
 import com.otsira.mapper.SetmealMapper;
 import com.otsira.result.Page;
 import com.otsira.service.SetmealService;
@@ -26,11 +31,17 @@ import java.util.List;
 @Service
 public class DefaultSetmealService implements SetmealService {
     private SetmealMapper setmealMapper;
+    private DishMapper dishMapper;
     private ObjectMapper objectMapper;
 
     @Autowired
     public void setSetmealMapper(SetmealMapper setmealMapper) {
         this.setmealMapper = setmealMapper;
+    }
+
+    @Autowired
+    public void setDishMapper(DishMapper dishMapper) {
+        this.dishMapper = dishMapper;
     }
 
     @Autowired
@@ -108,6 +119,16 @@ public class DefaultSetmealService implements SetmealService {
     @AutoFill(OperationType.UPDATE)
     @Transactional
     public int update(SetmealInfoDTO setmealInfoDTO) {
+        List<SetmealDish> setmealDishes = setmealInfoDTO.getSetmealDishes();
+        // 套餐内如果包含未起售的菜品，不允许修改套餐状态为启用
+        if (setmealInfoDTO.getStatus().equals(StatusConstant.ENABLE)) {
+            for (SetmealDish setmealDish : setmealDishes) {
+                if (dishMapper.selectByPrimaryKey(setmealDish.getDishId()).getStatus().equals(StatusConstant.DISABLE)) {
+                    throw new EnableStatusNotAllowedException(MessageConstant.SETMEAL_ENABLE_FAILED);
+                }
+            }
+        }
+
         // 更新套餐表 setmeal
         Setmeal setmeal = Setmeal.builder()
                 .id(setmealInfoDTO.getId())
@@ -127,7 +148,7 @@ public class DefaultSetmealService implements SetmealService {
 
         // 更新套餐-菜品关系表 setmeal_dish
         setmealMapper.deleteSetmealDishesBySetmealId(setmeal.getId());
-        for (SetmealDish setmealDish : setmealInfoDTO.getSetmealDishes()) {
+        for (SetmealDish setmealDish : setmealDishes) {
             setmealDish.setSetmealId(setmeal.getId());
             setmealMapper.insertSetmealDish(setmealDish);
         }
@@ -140,10 +161,25 @@ public class DefaultSetmealService implements SetmealService {
     public int deleteBatch(List<Long> ids) {
         int delete = 0;
         for (Long id : ids) {
+            // 起售中的套餐不能删除 SETMEAL_ON_SALE
+            Setmeal setmeal = setmealMapper.selectByPrimaryKey(id);
+            if (setmeal.getStatus().equals(StatusConstant.ENABLE)) {
+                throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
+            }
             delete += setmealMapper.deleteByPrimaryKey(id);
             setmealMapper.deleteSetmealDishesBySetmealId(id);
         }
         return delete;
+    }
+
+    @Override
+    public List<SetmealDish> querySetmealDishByDishId(Long id) {
+        return setmealMapper.querySetmealDishesByDishId(id);
+    }
+
+    @Override
+    public List<Setmeal> querySetmealByCategoryId(Long id) {
+        return setmealMapper.querySetmealByCategoryId(id);
     }
 
 }

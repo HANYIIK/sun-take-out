@@ -3,16 +3,20 @@ package com.otsira.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.otsira.annotation.AutoFill;
 import com.otsira.constant.MessageConstant;
-import com.otsira.dto.DishInertDTO;
+import com.otsira.constant.StatusConstant;
 import com.otsira.dto.DishInfoDTO;
+import com.otsira.dto.SetmealInfoDTO;
 import com.otsira.entity.Dish;
 import com.otsira.entity.DishFlavor;
+import com.otsira.entity.SetmealDish;
 import com.otsira.enumeration.OperationType;
+import com.otsira.exception.DeletionNotAllowedException;
 import com.otsira.exception.DishNameConflictException;
 import com.otsira.exception.DishNotFoundException;
 import com.otsira.mapper.DishMapper;
 import com.otsira.result.Page;
 import com.otsira.service.DishService;
+import com.otsira.service.SetmealService;
 import com.otsira.vo.DishInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +36,17 @@ import java.util.List;
 @Slf4j
 public class DefaultDishService implements DishService {
     private DishMapper dishMapper;
+    private SetmealService setmealService;
     private ObjectMapper objectMapper;
 
     @Autowired
     public void setDishMapper(DishMapper dishMapper) {
         this.dishMapper = dishMapper;
+    }
+
+    @Autowired
+    public void setSetmealService(SetmealService setmealService) {
+        this.setmealService = setmealService;
     }
 
     @Autowired
@@ -118,7 +128,25 @@ public class DefaultDishService implements DishService {
             flavor.setDishId(dish.getId());
             dishMapper.insertFlavor(flavor);
         }
-        return dishUpdate;
+
+        int updateSetmeal = 0;
+        // 如果菜品售卖状态被更改为停售
+        if (dishInfoDTO.getStatus().equals(StatusConstant.DISABLE)) {
+            // 需要判断该菜品是否被套餐引用
+            List<SetmealDish> setmealDishes = setmealService.querySetmealDishByDishId(dish.getId());
+            if (setmealDishes != null && !setmealDishes.isEmpty()) {
+                for (SetmealDish setmealDish : setmealDishes) {
+                    SetmealInfoDTO setmealInfoDTO = setmealService.querySetmealInfoDtoById(setmealDish.getSetmealId());
+                    // 如果被引用的套餐售卖状态为起售
+                    if (setmealInfoDTO.getStatus().equals(StatusConstant.ENABLE)) {
+                        // 则需要将套餐的售卖状态自动改为停售
+                        setmealInfoDTO.setStatus(StatusConstant.DISABLE);
+                        updateSetmeal += setmealService.update(setmealInfoDTO);
+                    }
+                }
+            }
+        }
+        return dishUpdate + updateSetmeal;
     }
 
     @Override
@@ -161,6 +189,18 @@ public class DefaultDishService implements DishService {
     public int deleteBatch(List<Long> ids) {
         int delete = 0;
         for (Long id : ids) {
+            // 起售中的菜品不能删除
+            if (dishMapper.selectByPrimaryKey(id).getStatus().equals(StatusConstant.ENABLE)) {
+                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
+            }
+
+            // 删除菜品前, 需要判断该菜品是否被套餐引用
+            List<SetmealDish> setmealDishes = setmealService.querySetmealDishByDishId(id);
+            if (setmealDishes != null && !setmealDishes.isEmpty()) {
+                // 该菜品被套餐引用, 不能删除
+                throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+            }
+
             // 删除菜品口味数据
             dishMapper.deleteFlavorsByDishId(id);
             // 删除菜品

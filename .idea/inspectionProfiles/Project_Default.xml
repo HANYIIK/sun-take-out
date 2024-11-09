@@ -1,6 +1,22 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="AliAccessStaticViaInstance" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaAbstractClassShouldStartWithAbstractNaming" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaAvoidApacheBeanUtilsCopy" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaAvoidCallStaticSimpleDateFormat" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaAvoidComplexCondition" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaAvoidNewDateGetTime" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaAvoidPatternCompileInMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaAvoidUseTimer" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaClassMustHaveAuthor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaLockShouldWithTryFinally" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaMethodTooLong" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaPackageNaming" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaSneakyThrowsWithoutExceptionType" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaTestClassShouldEndWithTestNaming" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaTransactionMustHaveRollback" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AlibabaUseRightCaseForDateFormat" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CommentedOutCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="minLines" value="10" />
     </inspection_tool>
@@ -135,6 +151,7 @@
           <option value="sun-common" />
           <option value="sun-common" />
           <option value="sun-common" />
+          <option value="sun-common" />
         </list>
       </option>
       <option name="ignoredPackages">
@@ -251,10 +268,12 @@
           <option value="org.apache.poi:poi:3.16" />
           <option value="org.apache.xmlbeans:xmlbeans:2.6.0" />
           <option value="org.springframework:spring-context:5.3.22" />
+          <option value="io.netty:netty-handler:4.1.79.Final" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
