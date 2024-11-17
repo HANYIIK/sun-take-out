@@ -12,6 +12,10 @@ spring:
     type: caffeine
     caffeine:
       spec: maximumSize=500,expireAfterAccess=600s
+  redis:
+    host: localhost
+    port: 6379
+    database: 1
 
 server:
   port: 8082
@@ -37,13 +41,21 @@ logging:
 auth:
   sun:
     jwt:
-      admin-secret-key: yiixhanyiik@gmail.com
-      admin-ttl: 7200000
-      admin-token-name: token_admin
       user-secret-key: yiixhanyiik@163.com
       user-ttl: 7200000
-      user-token-name: token_user
-    path:
-      exclude-paths:
-        - /admin/employee/login
-        - /user/login
+      user-token-name: authorization
+
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    access-key-id: CLASS_PATH
+    access-key-secret: CLASS_PATH
+    bucket-name: ostsiraoss
+    region: cn-beijing
+    file-dir: dishImages/
+    url-prefix: https://ostsiraoss.oss-cn-beijing.aliyuncs.com/
+
+sun:
+  wechat:
+    appid: wx2b4e26137fabf177
+    secret: c7224502dc78a3919da933400d0f951c

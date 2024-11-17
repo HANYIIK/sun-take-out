@@ -29,11 +29,12 @@ auth:
     jwt:
       admin-secret-key: yiixhanyiik@gmail.com
       admin-ttl: 7200000
-      admin-token-name: token_admin
+      admin-token-name: token
       user-secret-key: yiixhanyiik@163.com
       user-ttl: 7200000
-      user-token-name: token_user
+      user-token-name: authentication
     path:
       exclude-paths:
         - /admin/employee/login
-        - /user/login
+        - /user/user/login
+        - /user/shop/status

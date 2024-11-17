@@ -12,6 +12,10 @@ spring:
     type: caffeine
     caffeine:
       spec: maximumSize=500,expireAfterAccess=600s
+  redis:
+    host: localhost
+    port: 6379
+    database: 1
 
 server:
   port: 8081
@@ -39,14 +43,7 @@ auth:
     jwt:
       admin-secret-key: yiixhanyiik@gmail.com
       admin-ttl: 7200000
-      admin-token-name: token_admin
-      user-secret-key: yiixhanyiik@163.com
-      user-ttl: 7200000
-      user-token-name: token_user
-    path:
-      exclude-paths:
-        - /admin/employee/login
-        - /user/login
+      admin-token-name: token
 
 aliyun:
   oss:

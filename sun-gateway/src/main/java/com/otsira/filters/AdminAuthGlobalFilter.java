@@ -1,7 +1,7 @@
 package com.otsira.filters;
 
 import com.otsira.constant.JwtClaimsConstant;
-import com.otsira.properties.AuthProperties;
+import com.otsira.properties.AuthPathProperties;
 import com.otsira.properties.JwtProperties;
 import com.otsira.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -26,16 +26,17 @@ import java.util.List;
  * @description: jwt 登录校验全局过滤器
  * @create: 2024/10/24 18:33
  */
+@SuppressWarnings("LoggingSimilarMessage")
 @Component
 @Slf4j
 public class AdminAuthGlobalFilter implements GlobalFilter, Ordered {
     private JwtProperties jwtProperties;
-    private AuthProperties authProperties;
+    private AuthPathProperties authPathProperties;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Autowired
-    public void setAuthProperties(AuthProperties authProperties) {
-        this.authProperties = authProperties;
+    public void setAuthProperties(AuthPathProperties authPathProperties) {
+        this.authPathProperties = authPathProperties;
     }
 
     @Autowired
@@ -55,33 +56,63 @@ public class AdminAuthGlobalFilter implements GlobalFilter, Ordered {
         }
 
         // 3. 获取 token
-        log.info("当前请求路径需要登录拦截, 进行登录校验...");
-        List<String> token = request.getHeaders().get("token");
+        Claims claims;
+        ServerWebExchange webExchange;
+        List<String> token;
 
-        // 4. 校验并解析 token
-        if (token != null && !token.isEmpty()) {
-            try {
-                Claims claims = JwtUtil.parseToken(jwtProperties.getAdminSecretKey(), token.get(0));
-                // 5. 传递用户信息
-                Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
-                log.info("当前登录的员工 id: {}", empId);
-                ServerWebExchange webExchange = exchange.mutate()
-                        .request(builder -> builder.header(JwtClaimsConstant.EMP_ID, empId.toString()))
-                        .build();
-                // 6. 放行
-                return chain.filter(webExchange);
-            } catch (Exception e) {
-                log.info("token 解析失败: {}", e.getMessage());
+        // 3.1 来自管理端
+        if (request.getPath().toString().contains("/admin")) {
+            log.info("当前管理端请求路径需要登录拦截, 进行登录校验...");
+            token = request.getHeaders().get(jwtProperties.getAdminTokenName());
+
+            // 4. 校验并解析 token
+            if (token != null && !token.isEmpty()) {
+                try {
+                    claims = JwtUtil.parseToken(jwtProperties.getAdminSecretKey(), token.get(0));
+                    // 5. 传递管理员信息
+                    Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
+                    log.info("当前登录的员工 id: {}", empId);
+                    webExchange = exchange.mutate()
+                            .request(builder -> builder.header(JwtClaimsConstant.EMP_ID, empId.toString()))
+                            .build();
+                    // 6. 放行
+                    return chain.filter(webExchange);
+                } catch (Exception e) {
+                    log.info("token 解析失败: {}", e.getMessage());
+                }
+            }
+        // 3.2 来自用户端
+        } else if (request.getPath().toString().contains("/user")) {
+            log.info("当前用户端请求路径需要登录拦截, 进行登录校验...");
+            token = request.getHeaders().get(jwtProperties.getUserTokenName());
+
+            // 4. 校验并解析 token
+            if (token != null && !token.isEmpty()) {
+                try {
+                    claims = JwtUtil.parseToken(jwtProperties.getUserSecretKey(), token.get(0));
+                    // 5. 传递用户信息
+                    Long userId = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
+                    log.info("当前登录的用户 id: {}", userId);
+                    webExchange = exchange.mutate()
+                            .request(builder -> builder.header(JwtClaimsConstant.USER_ID, userId.toString()))
+                            .build();
+                    // 6. 放行
+                    return chain.filter(webExchange);
+                } catch (Exception e) {
+                    log.info("token 解析失败: {}", e.getMessage());
+                }
             }
         }
-        // 5. 拦截
+
+        // 解析异常, 或系统发生异常, 统一进行 401 拦截
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         return response.setComplete();
     }
 
     private boolean isExclude(String path) {
-        for (String excludePath : authProperties.getExcludePaths()) {
+        for (String excludePath : authPathProperties.getExcludePaths()) {
+            log.info("excludePath: {}, now path: {}", excludePath, path);
             if (antPathMatcher.match(excludePath, path)) {
                 return true;
             }

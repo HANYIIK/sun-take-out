@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "auth.sun.path")
 @Data
-public class AuthProperties {
+public class AuthPathProperties {
     private List<String> includePaths;
     private List<String> excludePaths;
 }

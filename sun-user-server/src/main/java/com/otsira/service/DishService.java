@@ -1,7 +1,6 @@
 package com.otsira.service;
 
-import com.otsira.dto.UserLoginDTO;
-import com.otsira.entity.*;
+import com.otsira.vo.DishWithFlavorsVO;
 
 import java.util.List;
 
@@ -11,7 +10,6 @@ import java.util.List;
  * @description: 用户端的 service 层接口
  * @create: 2024/10/26 16:59
  */
-public interface UserService {
-    List<User> findAllUsers();
-    User wxLogin(UserLoginDTO userLoginDTO);
+public interface DishService {
+    List<DishWithFlavorsVO> queryDishesByCategoryId(Integer categoryId);
 }

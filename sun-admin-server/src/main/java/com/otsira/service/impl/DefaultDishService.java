@@ -17,7 +17,7 @@ import com.otsira.mapper.DishMapper;
 import com.otsira.result.Page;
 import com.otsira.service.DishService;
 import com.otsira.service.SetmealService;
-import com.otsira.vo.DishInfoVO;
+import com.otsira.vo.DishWithFlavorsAndCategoryNameVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,7 +70,7 @@ public class DefaultDishService implements DishService {
             page = totalPage;
         }
         Integer start = (page - 1) * pageSize;
-        List<DishInfoVO> records = dishMapper.queryPage(start, pageSize, name, categoryIdStr, statusStr);
+        List<DishWithFlavorsAndCategoryNameVO> records = dishMapper.queryPage(start, pageSize, name, categoryIdStr, statusStr);
         return Page.builder()
                 .total(total)
                 .records(records)

@@ -22,44 +22,41 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ApiModel(description = "后端返回给前端的 Dish 数据(需要categoryName属性)")
-public class DishInfoVO {
+@ApiModel(description = "后端返回给前端的 Dish 数据")
+public class DishWithFlavorsVO {
     @ApiModelProperty("主键值")
     private Long id;
 
-    @ApiModelProperty("菜品名称")
+    @ApiModelProperty(value = "菜品名称")
     private String name;
 
-    @ApiModelProperty("菜品分类id")
+    @ApiModelProperty(value = "菜品分类id")
     private Long categoryId;
 
-    @ApiModelProperty(value = "菜品分类名称")
-    private String categoryName;
-
-    @ApiModelProperty("菜品价格")
+    @ApiModelProperty(value = "菜品价格")
     private BigDecimal price;
 
-    @ApiModelProperty("菜品图片")
+    @ApiModelProperty(value = "菜品图片")
     private String image;
 
-    @ApiModelProperty("菜品描述信息")
+    @ApiModelProperty(value = "菜品描述信息")
     private String description;
 
-    @ApiModelProperty("菜品状态: 0-停售, 1-起售")
+    @ApiModelProperty(value = "菜品状态: 0-停售, 1-起售")
     private Integer status;
 
     @ApiModelProperty("口味")
     private List<DishFlavor> flavors;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
-    @ApiModelProperty("更新时间")
+    @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
 
-    @ApiModelProperty("创建该项菜品的员工id")
+    @ApiModelProperty(value = "创建该项菜品的员工id")
     private Long createUser;
 
-    @ApiModelProperty("修改该项菜品的员工id")
+    @ApiModelProperty(value = "修改该项菜品的员工id")
     private Long updateUser;
 }

@@ -1,6 +1,7 @@
 package com.otsira.config;
 
 import com.otsira.interceptor.EmployeeInfoInterceptor;
+import com.otsira.interceptor.UserInfoInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
@@ -48,7 +49,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new EmployeeInfoInterceptor());
+        registry.addInterceptor(new EmployeeInfoInterceptor())
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns("/admin/employee/login");
+        registry.addInterceptor(new UserInfoInterceptor())
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/user/login")
+                .excludePathPatterns("/user/shop/status");
     }
 
     /**
