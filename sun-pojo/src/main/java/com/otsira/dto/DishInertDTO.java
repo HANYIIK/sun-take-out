@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @ApiModel(description = "用于封装前端发过来的新增菜品表单的 DTO(包含口味 dishFlavors)")
-public class DishInertDTO {
+public class DishInertDTO implements Serializable {
     @ApiModelProperty("主键值")
     private Long id;
 

@@ -8,10 +8,6 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  cache:
-    type: caffeine
-    caffeine:
-      spec: maximumSize=500,expireAfterAccess=600s
   redis:
     host: localhost
     port: 6379

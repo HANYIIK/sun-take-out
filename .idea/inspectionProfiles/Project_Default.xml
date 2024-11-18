@@ -230,6 +230,7 @@
           <option value="sun-common" />
           <option value="sun-common" />
           <option value="sun-common" />
+          <option value="sun-common" />
         </list>
       </option>
       <option name="ignoredPackages">
@@ -347,10 +348,12 @@
           <option value="org.apache.xmlbeans:xmlbeans:2.6.0" />
           <option value="org.springframework:spring-context:5.3.22" />
           <option value="io.netty:netty-handler:4.1.79.Final" />
+          <option value="io.netty:netty-common:4.1.79.Final" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />

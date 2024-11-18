@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @program: sun-take-out
  * @author: HANYIIK
@@ -18,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "用户登录的前端 POST 传输类")
-public class UserLoginDTO {
+public class UserLoginDTO implements Serializable {
     @ApiModelProperty("微信授权码")
     private String code;
 }

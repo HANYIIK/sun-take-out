@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class SetmealController {
 
     @GetMapping("/list")
     @ApiOperation("查询指定分类下的所有套餐")
+    @Cacheable(value = "setmeal", key = "#categoryId")
     public Result<List<Setmeal>> list(@RequestParam("categoryId") Integer categoryId) {
         log.info("用户 id-{} 请求查询 categoryId-{} 下的所有套餐", UserContext.getUserId(), categoryId);
         List<Setmeal> setmeals = setmealService.querySetmealsByCategoryId(categoryId);

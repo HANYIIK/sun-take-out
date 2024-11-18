@@ -12,10 +12,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @program: sun-take-out
@@ -23,16 +25,24 @@ import java.util.Objects;
  * @description: 菜品管理的 controller 层
  * @create: 2024/11/02 17:14
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/admin/dish")
 @Api(tags = "菜品管理相关接口")
 @Slf4j
 public class DishController {
     private DishService dishService;
+    private RedisTemplate redisTemplate;
 
     @Autowired
     public void setDishService(DishService dishService) {
         this.dishService = dishService;
+    }
+
+    @Autowired
+    public void setRedisTemplate(RedisTemplate redisTemplate) {
+        log.info("管理员端菜品管理 Controller 层正在注入 RedisTemplate: {}", redisTemplate);
+        this.redisTemplate = redisTemplate;
     }
 
     @ApiOperation("添加菜品")
@@ -57,6 +67,9 @@ public class DishController {
         if (add <= 0) {
             return Result.error("添加菜品失败");
         }
+        // 清楚 Redis 缓存中的菜品信息
+        String redisKey = "dish_" + dishInsertDTO.getCategoryId();
+        redisTemplate.delete(redisKey);
         return Result.success();
     }
 
@@ -91,6 +104,9 @@ public class DishController {
         if (update <= 0) {
             return Result.error("更新菜品信息失败");
         }
+        // 删除 Redis 缓存中的所有菜品信息
+        Set keys = redisTemplate.keys("dish_*");
+        redisTemplate.delete(keys);
         return Result.success();
     }
 
@@ -104,6 +120,9 @@ public class DishController {
         if (update <= 0) {
             return Result.error("更改菜品售卖状态失败");
         }
+        // 删除 Redis 缓存中的菜品信息
+        String redisKey = "dish_" + dishInfoDTO.getCategoryId();
+        redisTemplate.delete(redisKey);
         return Result.success();
     }
 
@@ -115,6 +134,9 @@ public class DishController {
         if (delete <= 0) {
             return Result.error("删除菜品失败");
         }
+        // 删除 Redis 缓存中的所有菜品信息
+        Set keys = redisTemplate.keys("dish_*");
+        redisTemplate.delete(keys);
         return Result.success();
     }
 

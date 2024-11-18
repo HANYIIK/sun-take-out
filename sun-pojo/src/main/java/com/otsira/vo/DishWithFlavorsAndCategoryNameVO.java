@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @ApiModel(description = "后端返回给前端的 Dish 数据(需要categoryName属性)")
-public class DishWithFlavorsAndCategoryNameVO {
+public class DishWithFlavorsAndCategoryNameVO implements Serializable {
     @ApiModelProperty("主键值")
     private Long id;
 

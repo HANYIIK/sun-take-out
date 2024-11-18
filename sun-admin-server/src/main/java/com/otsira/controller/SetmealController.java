@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,6 +50,7 @@ public class SetmealController {
 
     @ApiOperation("添加套餐")
     @PostMapping
+    @CacheEvict(value = "setmeal", key = "#setmealInsertDTO.categoryId")
     public Result<SetmealInfoDTO> insert(@RequestBody SetmealInsertDTO setmealInsertDTO) {
         SetmealInfoDTO setmealInfoDTO = SetmealInfoDTO.builder()
                 .id(setmealInsertDTO.getId())
@@ -82,6 +84,7 @@ public class SetmealController {
 
     @ApiOperation("更新套餐")
     @PutMapping
+    @CacheEvict(value = "setmeal", allEntries = true)
     public Result<Object> update(@RequestBody SetmealInsertDTO setmealInsertDTO) {
         SetmealInfoDTO setmealInfoDTO = SetmealInfoDTO.builder()
                 .id(setmealInsertDTO.getId())
@@ -107,6 +110,7 @@ public class SetmealController {
 
     @ApiOperation("修改套餐的售卖状态")
     @PostMapping("/status/{status}")
+    @CacheEvict(value = "setmeal", allEntries = true)
     public Result<Object> updateStatus(@PathVariable("status") Integer status, @RequestParam("id") Long id) {
         log.info("管理员 id-{} 正在修改套餐 id-{} 的售卖状态为: {}", EmployeeContext.getEmpId(), id, status);
         SetmealInfoDTO setmealInfoDTO = setmealService.querySetmealInfoDtoById(id);
@@ -118,8 +122,9 @@ public class SetmealController {
         return Result.success();
     }
 
-    @ApiOperation("删除套餐")
+    @ApiOperation("批量删除套餐")
     @DeleteMapping
+    @CacheEvict(value = "setmeal", allEntries = true)
     public Result<Object> delete(@RequestParam("ids") @RequestBody List<Long> ids) {
         log.info("管理员 id-{} 正在删除套餐: {}", EmployeeContext.getEmpId(), ids);
         int delete = setmealService.deleteBatch(ids);

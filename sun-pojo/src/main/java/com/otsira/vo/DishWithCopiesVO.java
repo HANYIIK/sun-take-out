@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @ApiModel(description = "后端返回给前端的套餐中所有的菜品封装类VO, 带有套餐中的菜品份数")
-public class DishWithCopiesVO {
+public class DishWithCopiesVO implements Serializable {
     @ApiModelProperty("主键值")
     private Long id;
 

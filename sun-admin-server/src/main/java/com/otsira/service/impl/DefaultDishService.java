@@ -190,7 +190,8 @@ public class DefaultDishService implements DishService {
         int delete = 0;
         for (Long id : ids) {
             // 起售中的菜品不能删除
-            if (dishMapper.selectByPrimaryKey(id).getStatus().equals(StatusConstant.ENABLE)) {
+            Dish dish = dishMapper.selectByPrimaryKey(id);
+            if (dish.getStatus().equals(StatusConstant.ENABLE)) {
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
 

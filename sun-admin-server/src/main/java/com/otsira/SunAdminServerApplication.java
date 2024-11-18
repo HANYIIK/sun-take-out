@@ -4,6 +4,7 @@ import com.otsira.config.FeignConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -19,6 +20,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @EnableDiscoveryClient
 @EnableTransactionManagement
 @MapperScan("com.otsira.mapper")
+@EnableCaching
 @Slf4j
 @EnableFeignClients(defaultConfiguration = FeignConfiguration.class) // 打开 openFeign 支持
 public class SunAdminServerApplication {

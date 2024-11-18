@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -25,7 +26,7 @@ import java.math.BigDecimal;
 @Builder
 @Table(name = "setmeal_dish")
 @ApiModel(description = "用于封装数据库中套餐表中的菜品实体类")
-public class SetmealDish {
+public class SetmealDish implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("主键值")

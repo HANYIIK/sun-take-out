@@ -14,7 +14,7 @@ import java.util.List;
  * @create: 2024/11/16 20:17
  */
 public interface DishMapper extends Mapper<Dish> {
-    @Select("select * from dish where category_id = #{categoryId} order by update_time desc")
+    @Select("select * from dish where category_id = #{categoryId} and status = 1 order by update_time desc")
     List<Dish> queryDishesByCategoryId(Integer categoryId);
 
     @Select("SELECT dish_flavor.* FROM dish, dish_flavor WHERE dish.`id`=dish_flavor.`dish_id` AND dish_flavor.`dish_id`=#{dishId}")
