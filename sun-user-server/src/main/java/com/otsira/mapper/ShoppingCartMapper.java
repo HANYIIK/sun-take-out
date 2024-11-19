@@ -13,8 +13,8 @@ import tk.mybatis.mapper.common.Mapper;
  */
 public interface ShoppingCartMapper extends Mapper<ShoppingCart> {
 
-    @Select("select * from shopping_cart where user_id = #{userId} and dish_id = #{dishId}")
-    ShoppingCart queryByUserIdAndDishId(Long userId, Long dishId);
+    @Select("select * from shopping_cart where user_id = #{userId} and dish_id = #{dishId} and dish_flavor like concat('%',#{dishFlavor},'%')")
+    ShoppingCart queryByUserIdAndDishIdAndDishFlavor(Long userId, Long dishId, String dishFlavor);
 
     @Select("select * from shopping_cart where user_id = #{userId} and setmeal_id = #{setmealId}")
     ShoppingCart queryByUserIdAndSetmealId(Long userId, Long setmealId);

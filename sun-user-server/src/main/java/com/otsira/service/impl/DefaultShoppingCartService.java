@@ -51,7 +51,7 @@ public class DefaultShoppingCartService implements ShoppingCartService {
         // 1.是个菜品
         if (shoppingCartDTO.getDishId() != null) {
             // 不是该用户第一次添加该菜品
-            ShoppingCart shoppingCartExist = shoppingCartMapper.queryByUserIdAndDishId(UserContext.getUserId(), shoppingCartDTO.getDishId());
+            ShoppingCart shoppingCartExist = shoppingCartMapper.queryByUserIdAndDishIdAndDishFlavor(UserContext.getUserId(), shoppingCartDTO.getDishId(), shoppingCartDTO.getDishFlavor());
             if (shoppingCartExist != null) {
                 shoppingCartExist.setNumber(shoppingCartExist.getNumber() + 1);
                 insert = shoppingCartMapper.updateByPrimaryKeySelective(shoppingCartExist);
@@ -102,7 +102,7 @@ public class DefaultShoppingCartService implements ShoppingCartService {
         ShoppingCart shoppingCartExist;
         // 1.是个菜品
         if (shoppingCartDTO.getDishId() != null) {
-            shoppingCartExist = shoppingCartMapper.queryByUserIdAndDishId(UserContext.getUserId(), shoppingCartDTO.getDishId());
+            shoppingCartExist = shoppingCartMapper.queryByUserIdAndDishIdAndDishFlavor(UserContext.getUserId(), shoppingCartDTO.getDishId(), shoppingCartDTO.getDishFlavor());
         // 2.是个套餐
         } else if (shoppingCartDTO.getSetmealId() != null) {
             shoppingCartExist = shoppingCartMapper.queryByUserIdAndSetmealId(UserContext.getUserId(), shoppingCartDTO.getSetmealId());
