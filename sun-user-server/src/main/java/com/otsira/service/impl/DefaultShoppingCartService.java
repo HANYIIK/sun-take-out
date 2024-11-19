@@ -48,6 +48,9 @@ public class DefaultShoppingCartService implements ShoppingCartService {
     @Override
     public int insert(ShoppingCartDTO shoppingCartDTO) {
         int insert;
+        if (shoppingCartDTO.getDishFlavor() == null) {
+            shoppingCartDTO.setDishFlavor("");
+        }
         // 1.是个菜品
         if (shoppingCartDTO.getDishId() != null) {
             // 不是该用户第一次添加该菜品
@@ -100,6 +103,9 @@ public class DefaultShoppingCartService implements ShoppingCartService {
     public int delete(ShoppingCartDTO shoppingCartDTO) {
         int delete;
         ShoppingCart shoppingCartExist;
+        if (shoppingCartDTO.getDishFlavor() == null) {
+            shoppingCartDTO.setDishFlavor("");
+        }
         // 1.是个菜品
         if (shoppingCartDTO.getDishId() != null) {
             shoppingCartExist = shoppingCartMapper.queryByUserIdAndDishIdAndDishFlavor(UserContext.getUserId(), shoppingCartDTO.getDishId(), shoppingCartDTO.getDishFlavor());
