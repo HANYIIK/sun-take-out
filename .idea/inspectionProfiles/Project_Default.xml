@@ -64,7 +64,7 @@
     <inspection_tool class="AlibabaUseQuietReferenceNotation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AlibabaUseRightCaseForDateFormat" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CommentedOutCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
-      <option name="minLines" value="10" />
+      <option name="minLines" value="32" />
     </inspection_tool>
     <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <Languages>
