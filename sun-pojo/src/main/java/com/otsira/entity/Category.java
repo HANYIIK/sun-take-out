@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
  * @description: 菜品分类的数据库封装实体类
  * @create: 2024/10/30 16:17
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
 @Table(name = "category")
 @ApiModel(description = "用于封装数据库中菜品分类的实体类")
