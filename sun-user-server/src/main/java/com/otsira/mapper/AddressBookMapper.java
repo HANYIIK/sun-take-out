@@ -26,7 +26,4 @@ public interface AddressBookMapper extends Mapper<AddressBook> {
 
     @Update("update address_book set is_default = 1 where id = #{id}")
     int updateIsDefaultById(Long id);
-
-    @Select("select * from address_book where id = #{id} and user_id = #{userId}")
-    AddressBook queryAddressBookById(Long id, Long userId);
 }

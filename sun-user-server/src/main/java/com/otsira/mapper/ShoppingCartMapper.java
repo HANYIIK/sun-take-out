@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.List;
+
 /**
  * @program: sun-take-out
  * @author: HANYIIK
@@ -21,4 +23,7 @@ public interface ShoppingCartMapper extends Mapper<ShoppingCart> {
 
     @Delete("delete from shopping_cart where user_id = #{userId}")
     int deleteByUserId(Long userId);
+
+    @Select("select * from shopping_cart where user_id = #{userId}")
+    List<ShoppingCart> queryByUserId(Long userId);
 }

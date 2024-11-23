@@ -78,7 +78,7 @@ public class DefaultAddressBookService implements AddressBookService {
      */
     @Override
     public AddressBook queryAddressBookById(Long id) {
-        return addressBookMapper.queryAddressBookById(id, UserContext.getUserId());
+        return addressBookMapper.selectByPrimaryKey(id);
     }
 
     /**
