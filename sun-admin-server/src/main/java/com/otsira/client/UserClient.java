@@ -15,7 +15,7 @@ import java.util.List;
  */
 @FeignClient(value = "sun-user", fallback = UserClientFallback.class, qualifiers = "userClient")
 public interface UserClient {
-    @GetMapping("user/findAllUsers")
+    @GetMapping("/user/user/findAllUsers")
     @ResponseBody
     List<User> findAll();
 }

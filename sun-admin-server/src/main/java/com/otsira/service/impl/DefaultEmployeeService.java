@@ -118,6 +118,11 @@ public class DefaultEmployeeService implements EmployeeService {
         return employeeMapper.updateByPrimaryKeySelective(employee);
     }
 
+    /**
+     * @description: 更新员工权限的启用/禁用状态
+     * @param employeeInfoDTO 前端传回来的员工信息(员工id，员工状态)
+     * @return 受影响的行数
+     */
     @Override
     @AutoFill(OperationType.UPDATE)
     public int updateStatus(EmployeeInfoDTO employeeInfoDTO) {
@@ -157,6 +162,11 @@ public class DefaultEmployeeService implements EmployeeService {
                 .build();
     }
 
+    /**
+     * @description: 根据员工id查询员工信息
+     * @param id 员工id
+     * @return 员工信息
+     */
     @Override
     public Employee queryById(Long id) {
         Employee employee = employeeMapper.selectByPrimaryKey(id);

@@ -93,6 +93,7 @@
           <option value="http://www.ibm.com/webservices/xsd" />
           <option value="http://www.jboss.com/xml/ns/" />
           <option value="http://www.jboss.org/j2ee/schema/" />
+          <option value="http://www.otsira.org" />
           <option value="http://www.springframework.org/schema/" />
           <option value="http://www.springframework.org/security/tags" />
           <option value="http://www.springframework.org/tags" />
@@ -106,6 +107,8 @@
       <option name="customHeaders">
         <set>
           <option value="token" />
+          <option value="Wechatpay-Serial" />
+          <option value="WeChatpay-Serial" />
         </set>
       </option>
     </inspection_tool>

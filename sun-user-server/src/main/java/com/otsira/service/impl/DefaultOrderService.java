@@ -1,20 +1,26 @@
 package com.otsira.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.otsira.constant.MessageConstant;
 import com.otsira.dto.OrderSubmitDTO;
+import com.otsira.dto.OrdersPaymentDTO;
 import com.otsira.entity.*;
 import com.otsira.exception.AddressBookBusinessException;
+import com.otsira.exception.OrderBusinessException;
 import com.otsira.exception.ShoppingCartBusinessException;
 import com.otsira.mapper.*;
 import com.otsira.service.OrderService;
 import com.otsira.util.UserContext;
+import com.otsira.util.WeChatPayUtil;
+import com.otsira.vo.OrderPaymentVO;
 import com.otsira.vo.OrderSubmitVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +40,9 @@ public class DefaultOrderService implements OrderService {
     private OrderDetailMapper orderDetailMapper;
     private AddressBookMapper addressBookMapper;
     private ShoppingCartMapper shoppingCartMapper;
+    private UserMapper userMapper;
     private ObjectMapper objectMapper;
+    private WeChatPayUtil weChatPayUtil;
 
     @Autowired
     public void setOrderMapper(OrderMapper orderMapper) {
@@ -57,10 +65,25 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Autowired
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
+    @Autowired
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
+    @Autowired
+    public void setWeChatPayUtil(WeChatPayUtil weChatPayUtil) {
+        this.weChatPayUtil = weChatPayUtil;
+    }
+
+    /**
+     * 用户提交订单
+     * @param orderSubmitDTO 订单提交的 DTO
+     * @return OrderSubmitVO 订单提交成功的 VO
+     */
     @Override
     @Transactional
     public OrderSubmitVO submitOrder(OrderSubmitDTO orderSubmitDTO) {
@@ -148,5 +171,59 @@ public class DefaultOrderService implements OrderService {
                 .orderAmount(order.getAmount())
                 .orderTime(order.getOrderTime())
                 .build();
+    }
+
+    /**
+     * 订单支付
+     * @param ordersPaymentDTO 订单支付的 DTO
+     * @return OrderPaymentVO 订单支付成功的 VO
+     * @throws Exception 异常
+     */
+    @Override
+    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
+        // 当前登录用户
+        User user = userMapper.selectByPrimaryKey(UserContext.getUserId());
+
+        // 调用微信支付接口，生成预支付交易单
+        JSONObject jsonObject = weChatPayUtil.pay(
+                // 商户订单号
+                ordersPaymentDTO.getOrderNumber(),
+                // 支付金额，单位: 元
+                new BigDecimal("0.01"),
+                // 商品描述
+                "苍穹外卖订单",
+                // 微信用户的 openid
+                user.getOpenid()
+        );
+
+        if (jsonObject.getString("code") != null && "ORDERPAID".equals(jsonObject.getString("code"))) {
+            throw new OrderBusinessException("该订单已支付");
+        }
+
+        OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
+        // packageStr = "prepay_id=xxxxxxxxx"
+        vo.setPackageStr(jsonObject.getString("package"));
+
+        return vo;
+    }
+
+    /**
+     * 支付成功, 修改 orders 表: 订单的状态、支付方式、支付状态、结账时间
+     * @param outTradeNo 商户订单号
+     * @return 受影响行数
+     */
+    @Override
+    public int paySuccess(String outTradeNo) {
+        Order order = Order.builder()
+                // 订单 id
+                .id(orderMapper.queryByNumber(outTradeNo).getId())
+                // 修改订单状态为: 2-待接单
+                .status(Order.TO_BE_CONFIRMED)
+                // 修改支付状态为: 1-已支付
+                .payStatus(Order.PAID)
+                // 结账时间: now
+                .checkoutTime(LocalDateTime.now())
+                .build();
+        return orderMapper.updateByPrimaryKeySelective(order);
     }
 }

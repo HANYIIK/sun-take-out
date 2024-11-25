@@ -34,6 +34,7 @@ public class AutoFillAspect {
 
     /**
      * 前置通知
+     * @param joinPoint 连接点
      */
     @Before("autoFillPointCut()")
     public void autoFill(JoinPoint joinPoint) {
@@ -71,7 +72,7 @@ public class AutoFillAspect {
                 setUpdateUser.invoke(entity, empId);
                 setUpdateTime.invoke(entity, localTime);
             } else if (operationType == OperationType.UPDATE) {
-                // UPDATE 操
+                // UPDATE 操作
                 log.info("UPDATE 操作，自动填充 updateUser 和 updateTime");
                 setUpdateUser.invoke(entity, empId);
                 setUpdateTime.invoke(entity, localTime);

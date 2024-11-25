@@ -38,3 +38,4 @@ auth:
         - /admin/employee/login
         - /user/user/login
         - /user/shop/status
+        - /user/notify/**
