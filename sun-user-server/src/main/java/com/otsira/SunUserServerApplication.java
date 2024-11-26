@@ -3,6 +3,7 @@ package com.otsira;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
@@ -14,6 +15,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @MapperScan("com.otsira.mapper")
 @EnableCaching  // 开启缓存
+@EnableScheduling   // 开启定时任务调度
 public class SunUserServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(SunUserServerApplication.class, args);

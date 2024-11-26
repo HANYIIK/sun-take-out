@@ -1,26 +1,24 @@
 package com.otsira.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.otsira.constant.MessageConstant;
 import com.otsira.dto.OrderSubmitDTO;
 import com.otsira.dto.OrdersPaymentDTO;
 import com.otsira.entity.*;
 import com.otsira.exception.AddressBookBusinessException;
-import com.otsira.exception.OrderBusinessException;
 import com.otsira.exception.ShoppingCartBusinessException;
 import com.otsira.mapper.*;
+import com.otsira.result.Page;
 import com.otsira.service.OrderService;
 import com.otsira.util.UserContext;
-import com.otsira.util.WeChatPayUtil;
 import com.otsira.vo.OrderPaymentVO;
 import com.otsira.vo.OrderSubmitVO;
+import com.otsira.vo.OrderWithDetailsVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,9 +38,9 @@ public class DefaultOrderService implements OrderService {
     private OrderDetailMapper orderDetailMapper;
     private AddressBookMapper addressBookMapper;
     private ShoppingCartMapper shoppingCartMapper;
-    private UserMapper userMapper;
+    // private UserMapper userMapper;
     private ObjectMapper objectMapper;
-    private WeChatPayUtil weChatPayUtil;
+    // private WeChatPayUtil weChatPayUtil;
 
     @Autowired
     public void setOrderMapper(OrderMapper orderMapper) {
@@ -64,20 +62,20 @@ public class DefaultOrderService implements OrderService {
         this.shoppingCartMapper = shoppingCartMapper;
     }
 
-    @Autowired
-    public void setUserMapper(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
+    // @Autowired
+    // public void setUserMapper(UserMapper userMapper) {
+    //     this.userMapper = userMapper;
+    // }
 
     @Autowired
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    @Autowired
-    public void setWeChatPayUtil(WeChatPayUtil weChatPayUtil) {
-        this.weChatPayUtil = weChatPayUtil;
-    }
+    // @Autowired
+    // public void setWeChatPayUtil(WeChatPayUtil weChatPayUtil) {
+    //     this.weChatPayUtil = weChatPayUtil;
+    // }
 
     /**
      * 用户提交订单
@@ -177,11 +175,10 @@ public class DefaultOrderService implements OrderService {
      * 订单支付
      * @param ordersPaymentDTO 订单支付的 DTO
      * @return OrderPaymentVO 订单支付成功的 VO
-     * @throws Exception 异常
      */
     @Override
-    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
-        // 当前登录用户
+    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) /*throws Exception*/ {
+        /*// 当前登录用户
         User user = userMapper.selectByPrimaryKey(UserContext.getUserId());
 
         // 调用微信支付接口，生成预支付交易单
@@ -204,7 +201,11 @@ public class DefaultOrderService implements OrderService {
         // packageStr = "prepay_id=xxxxxxxxx"
         vo.setPackageStr(jsonObject.getString("package"));
 
-        return vo;
+        return vo;*/
+
+        // 【没有商户, 跳过微信支付】
+        paySuccess(ordersPaymentDTO.getOrderNumber());
+        return new OrderPaymentVO();
     }
 
     /**
@@ -224,6 +225,53 @@ public class DefaultOrderService implements OrderService {
                 // 结账时间: now
                 .checkoutTime(LocalDateTime.now())
                 .build();
+        return orderMapper.updateByPrimaryKeySelective(order);
+    }
+
+    /**
+     * 查询历史订单
+     * @param page 当前页码
+     * @param pageSize 一页几条数据
+     * @param status 订单状态
+     * @return Page<OrderWithDetailsVO> 分页数据
+     */
+    @Override
+    public Page historyOrders(Integer page, Integer pageSize, Integer status) {
+        String statusStr = status == null ? "" : status.toString();
+        int total = orderMapper.queryPageCountByUserId(UserContext.getUserId(), statusStr);
+        Integer totalPage = total % pageSize == 0 ? total / pageSize : total / pageSize + 1;
+        if (totalPage == 0) {
+            totalPage = 1;
+        }
+        if (page > totalPage) {
+            page = totalPage;
+        }
+        Integer start = (page - 1) * pageSize;
+        List<OrderWithDetailsVO> orderWithDetailsList = orderMapper.queryOrderWithDetailsAsPage(UserContext.getUserId(), statusStr, start, pageSize);
+        for (OrderWithDetailsVO orderWithDetails : orderWithDetailsList) {
+            orderWithDetails.setOrderDetailList(orderDetailMapper.queryOrderDetailByOrderId(orderWithDetails.getId()));
+        }
+        return Page.builder()
+                .total(total)
+                .records(orderWithDetailsList)
+                .build();
+    }
+
+    @Override
+    public OrderWithDetailsVO orderDetail(Long id) {
+        Order order = orderMapper.selectByPrimaryKey(id);
+        OrderWithDetailsVO orderWithDetails = objectMapper.convertValue(order, OrderWithDetailsVO.class);
+        orderWithDetails.setOrderDetailList(orderDetailMapper.queryOrderDetailByOrderId(id));
+        return orderWithDetails;
+    }
+
+    @Override
+    public int cancelOrder(Long id) {
+        Order order = orderMapper.selectByPrimaryKey(id);
+        order.setStatus(Order.CANCELLED);
+        order.setCancelReason("用户方取消订单");
+        // TODO: 用户退款
+        order.setPayStatus(Order.REFUND);
         return orderMapper.updateByPrimaryKeySelective(order);
     }
 }

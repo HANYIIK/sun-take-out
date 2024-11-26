@@ -2,11 +2,13 @@ package com.otsira.controller;
 
 import com.otsira.dto.OrderSubmitDTO;
 import com.otsira.dto.OrdersPaymentDTO;
+import com.otsira.result.Page;
 import com.otsira.result.Result;
 import com.otsira.service.OrderService;
 import com.otsira.util.UserContext;
 import com.otsira.vo.OrderPaymentVO;
 import com.otsira.vo.OrderSubmitVO;
+import com.otsira.vo.OrderWithDetailsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -46,5 +48,34 @@ public class OrderController {
         OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
         log.info("生成预支付交易单：{}", orderPaymentVO);
         return Result.success(orderPaymentVO);
+    }
+
+    @GetMapping("/historyOrders")
+    @ApiOperation("用户历史订单的分页模糊查询")
+    public Result<Page> historyOrders(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                      @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                      @RequestParam(value = "status", required = false) Integer status) {
+        log.info("用户 id-{} 正在查询历史订单", UserContext.getUserId());
+        Page pageResult = orderService.historyOrders(page, pageSize, status);
+        return Result.success(pageResult);
+    }
+
+    @GetMapping("/orderDetail/{id}")
+    @ApiOperation("根据订单id查询订单详情")
+    public Result<OrderWithDetailsVO> orderDetail(@PathVariable Long id) {
+        log.info("用户 id-{} 正在查询订单 id-{} 的订单明细", UserContext.getUserId(), id);
+        OrderWithDetailsVO orderWithDetailsVO = orderService.orderDetail(id);
+        return Result.success(orderWithDetailsVO);
+    }
+
+    @PutMapping("/cancel/{id}")
+    @ApiOperation("用户取消订单")
+    public Result<Object> cancelOrder(@PathVariable Long id) {
+        log.info("用户 id-{} 正在取消订单 id-{}", UserContext.getUserId(), id);
+        int update = orderService.cancelOrder(id);
+        if (update <= 0) {
+            return Result.error("用户取消订单失败");
+        }
+        return Result.success();
     }
 }

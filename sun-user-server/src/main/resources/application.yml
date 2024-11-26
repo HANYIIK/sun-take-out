@@ -58,7 +58,7 @@ sun:
     mchid: xxxxxxxxx
     mch-serial-no: xxxxxxxxx
     private-key-file-path: xxxxxxxxx
-    api-v3-key: xxxxxxxxx
     we-chat-pay-cert-file-path: xxxxxxxxx
+    api-v3-key: xxxxxxxxx
     notify-url: http://www.otsira.org/api/user/notify/paySuccess
     refund-notify-url: http://www.otsira.org/api/user/notify/refundSuccess

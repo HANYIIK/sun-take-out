@@ -83,7 +83,7 @@ public class DefaultDishService implements DishService {
         if (dish == null) {
             throw new DishNotFoundException(MessageConstant.DISH_NOT_FOUND);
         }
-        // 设置菜品口味List
+        // 设置菜品口味 List
         DishInfoDTO dishInfoDTO = objectMapper.convertValue(dish, DishInfoDTO.class);
         List<DishFlavor> flavors = dishMapper.queryFlavorByDishId(id);
         dishInfoDTO.setFlavors(flavors);

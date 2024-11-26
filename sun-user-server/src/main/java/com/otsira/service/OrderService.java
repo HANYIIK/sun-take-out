@@ -2,8 +2,10 @@ package com.otsira.service;
 
 import com.otsira.dto.OrderSubmitDTO;
 import com.otsira.dto.OrdersPaymentDTO;
+import com.otsira.result.Page;
 import com.otsira.vo.OrderPaymentVO;
 import com.otsira.vo.OrderSubmitVO;
+import com.otsira.vo.OrderWithDetailsVO;
 
 /**
  * @program: sun-take-out
@@ -15,4 +17,7 @@ public interface OrderService {
     OrderSubmitVO submitOrder(OrderSubmitDTO orderSubmitDTO);
     OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception;
     int paySuccess(String outTradeNo);
+    Page historyOrders(Integer page, Integer pageSize, Integer status);
+    OrderWithDetailsVO orderDetail(Long id);
+    int cancelOrder(Long id);
 }
