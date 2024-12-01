@@ -20,4 +20,5 @@ public interface OrderService {
     Page historyOrders(Integer page, Integer pageSize, Integer status);
     OrderWithDetailsVO orderDetail(Long id);
     int cancelOrder(Long id);
+    int repeatOrder(Long id);
 }

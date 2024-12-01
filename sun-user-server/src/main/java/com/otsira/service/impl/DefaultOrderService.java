@@ -1,5 +1,6 @@
 package com.otsira.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.otsira.constant.MessageConstant;
 import com.otsira.dto.OrderSubmitDTO;
@@ -14,6 +15,7 @@ import com.otsira.util.UserContext;
 import com.otsira.vo.OrderPaymentVO;
 import com.otsira.vo.OrderSubmitVO;
 import com.otsira.vo.OrderWithDetailsVO;
+import com.otsira.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -41,6 +44,7 @@ public class DefaultOrderService implements OrderService {
     // private UserMapper userMapper;
     private ObjectMapper objectMapper;
     // private WeChatPayUtil weChatPayUtil;
+    private WebSocketServer webSocketServer;
 
     @Autowired
     public void setOrderMapper(OrderMapper orderMapper) {
@@ -76,6 +80,11 @@ public class DefaultOrderService implements OrderService {
     // public void setWeChatPayUtil(WeChatPayUtil weChatPayUtil) {
     //     this.weChatPayUtil = weChatPayUtil;
     // }
+
+    @Autowired
+    public void setWebSocketServer(WebSocketServer webSocketServer) {
+        this.webSocketServer = webSocketServer;
+    }
 
     /**
      * 用户提交订单
@@ -225,6 +234,15 @@ public class DefaultOrderService implements OrderService {
                 // 结账时间: now
                 .checkoutTime(LocalDateTime.now())
                 .build();
+
+        // 支付成功, 向商家推送消息
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("type", 1);
+        map.put("orderId", order.getId());
+        map.put("content", "订单号: " + outTradeNo);
+        String jsonString = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(jsonString);
+
         return orderMapper.updateByPrimaryKeySelective(order);
     }
 
@@ -257,6 +275,11 @@ public class DefaultOrderService implements OrderService {
                 .build();
     }
 
+    /**
+     * 根据订单 id 查询包含订单详情的订单信息
+     * @param id 订单 id
+     * @return OrderWithDetailsVO 包含订单详情的订单信息
+     */
     @Override
     public OrderWithDetailsVO orderDetail(Long id) {
         Order order = orderMapper.selectByPrimaryKey(id);
@@ -265,13 +288,78 @@ public class DefaultOrderService implements OrderService {
         return orderWithDetails;
     }
 
+    /**
+     * 用户取消订单
+     * @param id 订单 id
+     * @return 受影响行数
+     */
     @Override
     public int cancelOrder(Long id) {
         Order order = orderMapper.selectByPrimaryKey(id);
         order.setStatus(Order.CANCELLED);
         order.setCancelReason("用户方取消订单");
+        order.setCancelTime(LocalDateTime.now());
         // TODO: 用户退款
+        /*try {
+            String refundResponseBody = weChatPayUtil.refund(order.getNumber(), order.getNumber(), order.getAmount(), order.getAmount());
+            // TODO: 解析退款结果
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }*/
         order.setPayStatus(Order.REFUND);
         return orderMapper.updateByPrimaryKeySelective(order);
+    }
+
+    /**
+     * 再来一单
+     * @param id 订单 id
+     * @return 受影响行数
+     */
+    @Override
+    public int repeatOrder(Long id) {
+        Order order = orderMapper.selectByPrimaryKey(id);
+        // 设置订单 id
+        order.setId(null);
+
+        // 设置新订单号
+        String uniqueOrderNumber = String.valueOf(Instant.now().toEpochMilli()) + new Random().nextInt(1000);
+        order.setNumber(uniqueOrderNumber);
+
+        // 设置订单状态: 1-待付款
+        order.setStatus(Order.PENDING_PAYMENT);
+
+        // 下单时间: now
+        order.setOrderTime(LocalDateTime.now());
+
+        // 结账时间: null
+        order.setCheckoutTime(null);
+
+        // 取消订单原因
+        order.setCancelReason(null);
+
+        // 取消订单时间
+        order.setCancelTime(null);
+
+        // 预计送达时间
+        order.setEstimatedDeliveryTime(null);
+
+        // 支付状态: 0-未支付
+        order.setPayStatus(Order.UN_PAID);
+
+        // 插入 order 表
+        int insert = orderMapper.insertSelective(order);
+        if (insert <= 0) {
+            log.error("用户 id-{} 再来一单失败: {}", UserContext.getUserId(), order);
+            throw new RuntimeException("再来一单失败");
+        }
+
+        // 插入 orderDetail 表
+        List<OrderDetail> orderDetails = orderDetailMapper.queryOrderDetailByOrderId(id);
+        for (OrderDetail orderDetail : orderDetails) {
+            orderDetail.setId(null);
+            orderDetail.setOrderId(order.getId());
+            insert += orderDetailMapper.insertSelective(orderDetail);
+        }
+        return insert;
     }
 }

@@ -63,6 +63,9 @@
     <inspection_tool class="AlibabaUnsupportedExceptionWithModifyAsList" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AlibabaUseQuietReferenceNotation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AlibabaUseRightCaseForDateFormat" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="METHOD_MATCHER_CONFIG" value="java.util.Formatter,format,java.io.Writer,append,com.google.common.base.Preconditions,checkNotNull,org.hibernate.Session,close,java.io.PrintWriter,printf,java.io.PrintStream,printf,java.lang.foreign.Arena,ofAuto,java.lang.foreign.Arena,global,java.util.Map,remove" />
+    </inspection_tool>
     <inspection_tool class="CommentedOutCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="minLines" value="32" />
     </inspection_tool>
@@ -234,6 +237,8 @@
           <option value="sun-common" />
           <option value="sun-common" />
           <option value="sun-common" />
+          <option value="sun-gateway" />
+          <option value="sun-gateway" />
         </list>
       </option>
       <option name="ignoredPackages">
@@ -352,10 +357,14 @@
           <option value="org.springframework:spring-context:5.3.22" />
           <option value="io.netty:netty-handler:4.1.79.Final" />
           <option value="io.netty:netty-common:4.1.79.Final" />
+          <option value="org.mybatis:mybatis:3.4.6" />
+          <option value="io.github.classgraph:classgraph:4.8.83" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="不可利用" />
+          <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />

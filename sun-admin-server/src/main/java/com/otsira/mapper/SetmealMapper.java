@@ -37,4 +37,10 @@ public interface SetmealMapper extends Mapper<Setmeal> {
 
     @Select("select * from setmeal where category_id = #{id}")
     List<Setmeal> querySetmealByCategoryId(Long id);
+
+    @Select("select count(*) from setmeal where status = 1")
+    Integer countSold();
+
+    @Select("select count(*) from setmeal where status = 0")
+    Integer countDiscontinued();
 }

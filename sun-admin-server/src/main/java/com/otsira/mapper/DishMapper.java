@@ -38,4 +38,9 @@ public interface DishMapper extends Mapper<Dish> {
     @Select("SELECT * FROM dish WHERE name=#{name}")
     Dish queryByName(String name);
 
+    @Select("SELECT count(*) FROM dish WHERE status=1")
+    Integer countSold();
+
+    @Select("SELECT count(*) FROM dish WHERE status=0")
+    Integer countDiscontinued();
 }
