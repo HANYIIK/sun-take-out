@@ -21,4 +21,5 @@ public interface OrderService {
     OrderWithDetailsVO orderDetail(Long id);
     int cancelOrder(Long id);
     int repeatOrder(Long id);
+    boolean reminder(Long id);
 }

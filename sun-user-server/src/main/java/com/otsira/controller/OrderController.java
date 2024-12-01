@@ -89,4 +89,15 @@ public class OrderController {
         }
         return Result.success();
     }
+
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("用户催单")
+    public Result<Object> reminder(@PathVariable Long id) {
+        log.info("用户 id-{} 正在催单 id-{}", UserContext.getUserId(), id);
+        boolean reminder = orderService.reminder(id);
+        if (!reminder) {
+            return Result.error("催单失败");
+        }
+        return Result.success();
+    }
 }

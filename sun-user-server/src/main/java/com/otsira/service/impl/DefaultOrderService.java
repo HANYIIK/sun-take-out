@@ -362,4 +362,28 @@ public class DefaultOrderService implements OrderService {
         }
         return insert;
     }
+
+    /**
+     * 用户催单
+     * @param id 订单 id
+     * @return 催单成功/失败
+     */
+    @Override
+    public boolean reminder(Long id) {
+        try {
+            Order order = orderMapper.selectByPrimaryKey(id);
+            HashMap<String, Object> map = new HashMap<>();
+            // type 1-来单提醒
+            // type 2-用户催单
+            map.put("type", 2);
+            map.put("orderId", order.getId());
+            map.put("content", order.getNumber());
+            String jsonString = JSON.toJSONString(map);
+            webSocketServer.sendToAllClient(jsonString);
+        } catch (Exception e) {
+            log.info("给客户端发送消息失败: {}", e.getMessage());
+            return false;
+        }
+        return true;
+    }
 }
