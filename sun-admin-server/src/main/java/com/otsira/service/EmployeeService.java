@@ -1,5 +1,6 @@
 package com.otsira.service;
 
+import com.otsira.dto.EmployeeEditPasswordDTO;
 import com.otsira.dto.EmployeeInfoDTO;
 import com.otsira.dto.EmployeeLoginDTO;
 import com.otsira.entity.Employee;
@@ -18,4 +19,5 @@ public interface EmployeeService {
     Page queryPage(Integer page, Integer pageSize, String name);
     int updateStatus(EmployeeInfoDTO employeeInfoDTO);
     Employee queryById(Long id);
+    int editPassword(EmployeeEditPasswordDTO employeeEditPasswordDTO);
 }

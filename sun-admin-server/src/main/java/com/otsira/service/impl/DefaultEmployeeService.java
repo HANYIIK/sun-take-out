@@ -5,6 +5,7 @@ import com.otsira.annotation.AutoFill;
 import com.otsira.constant.MessageConstant;
 import com.otsira.constant.PasswordConstant;
 import com.otsira.constant.StatusConstant;
+import com.otsira.dto.EmployeeEditPasswordDTO;
 import com.otsira.dto.EmployeeInfoDTO;
 import com.otsira.dto.EmployeeLoginDTO;
 import com.otsira.entity.Employee;
@@ -16,6 +17,7 @@ import com.otsira.exception.UserNameConflictException;
 import com.otsira.mapper.EmployeeMapper;
 import com.otsira.result.Page;
 import com.otsira.service.EmployeeService;
+import com.otsira.util.EmployeeContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,5 +178,23 @@ public class DefaultEmployeeService implements EmployeeService {
         // 隐藏密码, 防止前台通过浏览器控制台看到密码
         employee.setPassword("******");
         return employee;
+    }
+
+    /**
+     * 修改密码
+     * @param employeeEditPasswordDTO 前端传回来的员工信息(员工id，旧密码，新密码)
+     * @return 受影响的行数
+     */
+    @Override
+    public int editPassword(EmployeeEditPasswordDTO employeeEditPasswordDTO) {
+        // 旧密码一致性判断
+        Employee employee = employeeMapper.selectByPrimaryKey(EmployeeContext.getEmpId());
+        if (!employee.getPassword().equals(DigestUtils.md5Hex(employeeEditPasswordDTO.getOldPassword().getBytes()))) {
+            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+        }
+
+        // 旧密码一致, 修改密码
+        employee.setPassword(DigestUtils.md5Hex(employeeEditPasswordDTO.getNewPassword().getBytes()));
+        return employeeMapper.updateByPrimaryKeySelective(employee);
     }
 }

@@ -4,6 +4,7 @@ import com.otsira.client.UserClient;
 import com.otsira.constant.JwtClaimsConstant;
 import com.otsira.constant.MessageConstant;
 import com.otsira.constant.StatusConstant;
+import com.otsira.dto.EmployeeEditPasswordDTO;
 import com.otsira.dto.EmployeeInfoDTO;
 import com.otsira.dto.EmployeeLoginDTO;
 import com.otsira.entity.Employee;
@@ -176,5 +177,15 @@ public class EmployeeController {
             return Result.success();
         }
         return Result.error(MessageConstant.SYSTEM_ERROR);
+    }
+
+    @PutMapping("/editPassword")
+    @ApiOperation("修改员工的登录密码")
+    public Result<Object> editPassword(@RequestBody EmployeeEditPasswordDTO employeeEditPasswordDTO) {
+        log.info("管理员 id-{} 正在请求修改登录密码", EmployeeContext.getEmpId());
+        if (employeeService.editPassword(employeeEditPasswordDTO) <= 0) {
+            return Result.error("修改密码失败!");
+        }
+        return Result.success();
     }
 }
