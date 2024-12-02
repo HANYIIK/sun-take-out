@@ -4,6 +4,7 @@ import com.otsira.entity.Order;
 import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -36,4 +37,7 @@ public interface OrderMapper extends Mapper<Order> {
 
     @Select("SELECT COUNT(*) FROM orders WHERE status = 2")
     Integer countWaitingOrders();
+
+    @Select("SELECT SUM(amount) FROM orders WHERE status = #{status} AND order_time BETWEEN #{beginTime} AND #{endTime}")
+    Double sumTurnoverByDate(LocalDateTime beginTime, LocalDateTime endTime, Integer status);
 }
