@@ -1,6 +1,7 @@
 package com.otsira.client;
 
 import com.otsira.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
  * @create: 2024/10/27 14:30
  */
 @Component
+@Slf4j
 public class UserClientFallback implements UserClient {
     @Override
     public List<User> findAll() {
@@ -20,6 +22,13 @@ public class UserClientFallback implements UserClient {
         User user = new User();
         user.setName("findAllUsers 方法错误, 系统正忙...");
         users.add(user);
+        log.info("findAllUsers 方法错误, 系统正忙...");
         return users;
+    }
+
+    @Override
+    public List<Integer> findNewAndTotalUserNum(String begin, String end) {
+        log.info("findNewAndTotalUserNum 方法错误, 系统正忙...");
+        return List.of();
     }
 }

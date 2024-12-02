@@ -90,4 +90,17 @@ public class DefaultUserService implements UserService {
         log.info("用户 openid: {} 登录成功", openid);
         return user;
     }
+
+    /**
+     * openFeign 调用方法
+     * @param begin 开始时间
+     * @param end 结束时间
+     * @return 新增用户数和总用户数
+     */
+    @Override
+    public List<Integer> findNewAndTotalUserNum(LocalDateTime begin, LocalDateTime end) {
+        Integer newUserNum = userMapper.sumNewUserNumByDate(begin, end);
+        Integer totalUserNum = userMapper.sunTotalUserNumByDate(end);
+        return List.of(newUserNum, totalUserNum);
+    }
 }

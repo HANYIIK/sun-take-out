@@ -12,8 +12,10 @@ import com.otsira.vo.UserLoginVO;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,4 +72,18 @@ public class UserController {
 
         return Result.success(userLoginVO);
     }
+
+    /**
+     * 查询新增用户和总用户数(openFeign调用)
+     * @param begin 开始时间
+     * @param end 结束时间
+     * @return 新增用户数和总用户数
+     */
+    @GetMapping("/findNewAndTotalUserNum")
+    public List<Integer> findNewAndTotal(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime begin,
+                                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end) {
+        log.info("管理员 id {} 请求查询新增用户和总用户数", EmployeeContext.getEmpId());
+        return this.userService.findNewAndTotalUserNum(begin, end);
+    }
+
 }

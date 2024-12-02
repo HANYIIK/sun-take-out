@@ -47,9 +47,9 @@ public class ReportController {
     }
 
     @ApiOperation("用户统计")
-    // @GetMapping("/userStatistics")
+    @GetMapping("/userStatistics")
     public Result<UserReportVO> userStatistics(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
-        return Result.success();
+        return Result.success(reportService.getUserStatistics(begin, end));
     }
 }

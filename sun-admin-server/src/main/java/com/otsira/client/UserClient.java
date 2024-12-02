@@ -3,6 +3,7 @@ package com.otsira.client;
 import com.otsira.entity.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -18,4 +19,9 @@ public interface UserClient {
     @GetMapping("/user/user/findAllUsers")
     @ResponseBody
     List<User> findAll();
+
+    @GetMapping("/user/user/findNewAndTotalUserNum")
+    @ResponseBody
+    List<Integer> findNewAndTotalUserNum(@RequestParam("begin") String begin,
+                                         @RequestParam("end") String end);
 }
