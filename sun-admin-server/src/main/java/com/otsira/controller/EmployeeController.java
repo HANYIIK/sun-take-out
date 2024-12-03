@@ -109,6 +109,7 @@ public class EmployeeController {
         log.info("员工退出登录: id-{}", EmployeeContext.getEmpId());
         List<User> users = userClient.findAll();
         log.info("用户端微服务返回的用户信息：{}", users);
+        EmployeeContext.removeEmpId();
         return Result.success();
     }
 

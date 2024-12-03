@@ -6,7 +6,6 @@ import com.otsira.entity.User;
 import com.otsira.properties.JwtProperties;
 import com.otsira.result.Result;
 import com.otsira.service.UserService;
-import com.otsira.util.EmployeeContext;
 import com.otsira.util.JwtUtil;
 import com.otsira.vo.UserLoginVO;
 import io.swagger.annotations.Api;
@@ -45,7 +44,7 @@ public class UserController {
 
     @GetMapping("/findAllUsers")
     public List<User> findAll() {
-        log.info("管理员 id {} 请求查询所有用户", EmployeeContext.getEmpId());
+        log.info("管理端请求查询所有用户");
         return this.userService.findAllUsers();
     }
 
@@ -82,7 +81,7 @@ public class UserController {
     @GetMapping("/findNewAndTotalUserNum")
     public List<Integer> findNewAndTotal(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime begin,
                                          @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end) {
-        log.info("管理员 id {} 请求查询新增用户和总用户数", EmployeeContext.getEmpId());
+        log.info("管理端请求查询新增用户和总用户数");
         return this.userService.findNewAndTotalUserNum(begin, end);
     }
 
