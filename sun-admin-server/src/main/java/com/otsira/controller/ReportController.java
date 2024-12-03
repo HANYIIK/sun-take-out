@@ -3,6 +3,7 @@ package com.otsira.controller;
 import com.otsira.result.Result;
 import com.otsira.service.ReportService;
 import com.otsira.vo.OrderReportVO;
+import com.otsira.vo.SalesTop10ReportVO;
 import com.otsira.vo.TurnoverReportVO;
 import com.otsira.vo.UserReportVO;
 import io.swagger.annotations.Api;
@@ -40,10 +41,10 @@ public class ReportController {
     }
 
     @ApiOperation("订单统计")
-    // @GetMapping("/ordersStatistics")
+    @GetMapping("/ordersStatistics")
     public Result<OrderReportVO> ordersStatistics(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
                                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
-        return Result.success();
+        return Result.success(reportService.getOrdersStatistics(begin, end));
     }
 
     @ApiOperation("用户统计")
@@ -51,5 +52,12 @@ public class ReportController {
     public Result<UserReportVO> userStatistics(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         return Result.success(reportService.getUserStatistics(begin, end));
+    }
+
+    @ApiOperation("销量排名前10")
+    @GetMapping("/top10")
+    public Result<SalesTop10ReportVO> top10(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+        return Result.success(reportService.getTop10(begin, end));
     }
 }

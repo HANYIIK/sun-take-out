@@ -40,4 +40,13 @@ public interface OrderMapper extends Mapper<Order> {
 
     @Select("SELECT SUM(amount) FROM orders WHERE status = #{status} AND order_time BETWEEN #{beginTime} AND #{endTime}")
     Double sumTurnoverByDate(LocalDateTime beginTime, LocalDateTime endTime, Integer status);
+
+    @Select("SELECT COUNT(*) FROM orders WHERE order_time BETWEEN #{beginTime} AND #{endTime}")
+    Integer countAllOrdersByDate(LocalDateTime beginTime, LocalDateTime endTime);
+
+    @Select("SELECT COUNT(*) FROM orders WHERE order_time BETWEEN #{beginTime} AND #{endTime} AND status = #{status}")
+    Integer countValidOrderByDate(LocalDateTime beginTime, LocalDateTime endTime, Integer status);
+
+    @Select("SELECT COUNT(*) FROM orders WHERE status = #{status}")
+    Integer countValidOrders(Integer status);
 }

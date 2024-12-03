@@ -1,5 +1,7 @@
 package com.otsira.service;
 
+import com.otsira.vo.OrderReportVO;
+import com.otsira.vo.SalesTop10ReportVO;
 import com.otsira.vo.TurnoverReportVO;
 import com.otsira.vo.UserReportVO;
 
@@ -14,4 +16,6 @@ import java.time.LocalDate;
 public interface ReportService {
     TurnoverReportVO getTurnoverStatistics(LocalDate begin, LocalDate end);
     UserReportVO getUserStatistics(LocalDate begin, LocalDate end);
+    OrderReportVO getOrdersStatistics(LocalDate begin, LocalDate end);
+    SalesTop10ReportVO getTop10(LocalDate begin, LocalDate end);
 }
