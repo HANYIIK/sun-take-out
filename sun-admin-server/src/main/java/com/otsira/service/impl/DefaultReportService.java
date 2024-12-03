@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -120,7 +122,14 @@ public class DefaultReportService implements ReportService {
         Integer status = Order.COMPLETED;
         Integer validOrderNum = orderMapper.countValidOrders(status);
         // 订单完成率
-        Double orderCompletionRate = (double) validOrderNum / (double) totalOrderNum;
+        double orderCompletionRate;
+        if (totalOrderNum != null && totalOrderNum != 0) {
+            orderCompletionRate = BigDecimal.valueOf((double) validOrderNum / (double) totalOrderNum)
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .doubleValue();
+        } else {
+            orderCompletionRate = 0.0;
+        }
 
         // 每日总订单数列表
         List<Integer> orderCountList = new ArrayList<>();
@@ -160,13 +169,16 @@ public class DefaultReportService implements ReportService {
         LocalDateTime beginTime = LocalDateTime.of(begin, LocalTime.MIN);
         LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
         List<Top10Order> top10 = orderDetailMapper.queryTop10(beginTime, endTime);
-        ArrayList<String> nameList = new ArrayList<>();
+        /*ArrayList<String> nameList = new ArrayList<>();
         ArrayList<Integer> numberList = new ArrayList<>();
         for (Top10Order top10Order : top10) {
             log.info("top10Order: {}", top10Order);
             nameList.add(top10Order.getName());
             numberList.add(top10Order.getTotal());
-        }
+        }*/
+        List<String> nameList = top10.stream().map(Top10Order::getName).toList();
+        List<Integer> numberList = top10.stream().map(Top10Order::getTotal).toList();
+
         return SalesTop10ReportVO.builder()
                 .nameList(StringUtils.join(nameList, ","))
                 .numberList(StringUtils.join(numberList, ","))

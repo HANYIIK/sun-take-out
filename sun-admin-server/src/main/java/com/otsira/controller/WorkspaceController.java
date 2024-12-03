@@ -2,6 +2,7 @@ package com.otsira.controller;
 
 import com.otsira.result.Result;
 import com.otsira.service.WorkspaceService;
+import com.otsira.vo.BusinessDataVO;
 import com.otsira.vo.OrderOverViewVO;
 import com.otsira.vo.OverViewVO;
 import io.swagger.annotations.Api;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * @program: sun-take-out
@@ -48,4 +52,13 @@ public class WorkspaceController {
         return Result.success(workspaceService.overviewOrders());
     }
 
+    @ApiOperation("工作台今日数据査询")
+    @GetMapping("/businessData")
+    public Result<BusinessDataVO> businessData() {
+        //获得当天的开始时间
+        LocalDateTime begin = LocalDateTime.now().with(LocalTime.MIN);
+        //获得当天的结束时间
+        LocalDateTime end =LocalDateTime.now().with(LocalTime.MAX);
+        return Result.success(workspaceService.getBusinessData(begin, end));
+    }
 }

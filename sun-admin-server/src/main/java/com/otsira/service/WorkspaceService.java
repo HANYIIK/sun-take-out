@@ -1,7 +1,10 @@
 package com.otsira.service;
 
+import com.otsira.vo.BusinessDataVO;
 import com.otsira.vo.OrderOverViewVO;
 import com.otsira.vo.OverViewVO;
+
+import java.time.LocalDateTime;
 
 /**
  * @program: sun-take-out
@@ -13,4 +16,5 @@ public interface WorkspaceService {
     OverViewVO overviewDishes();
     OverViewVO overviewSetmeals();
     OrderOverViewVO overviewOrders();
+    BusinessDataVO getBusinessData(LocalDateTime begin, LocalDateTime end);
 }
