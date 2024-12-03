@@ -111,7 +111,6 @@ public class DefaultReportService implements ReportService {
 
     @Override
     public OrderReportVO getOrdersStatistics(LocalDate begin, LocalDate end) {
-        // TODO: 订单统计
         // 1.封装日期列表
         List<LocalDate> dateList = getDateList(begin, end);
 
@@ -158,7 +157,6 @@ public class DefaultReportService implements ReportService {
 
     @Override
     public SalesTop10ReportVO getTop10(LocalDate begin, LocalDate end) {
-        // TODO: 销量排名前10
         LocalDateTime beginTime = LocalDateTime.of(begin, LocalTime.MIN);
         LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
         List<Top10Order> top10 = orderDetailMapper.queryTop10(beginTime, endTime);
